@@ -1,14 +1,10 @@
-public class RPN {
+package rpn;
 
-    private static int getPriority(char ch){
-        return switch (ch) {
-            case '(' -> 1;
-            case ')' -> -1;
-            case '+', '-' -> 2;
-            case '*', '/' -> 3;
-            default -> 0;
-        };
-    }
+import utils.MyStack;
+
+import static utils.ExpressionsUtils.*;
+
+public abstract class RPN {
 
     public static String toRPN(String input){
         MyStack<Character> stack = new MyStack<>();
@@ -76,7 +72,7 @@ public class RPN {
         double answer;
         for (int i = 0; i < rpn.length(); i++) {
             ch = rpn.charAt(i);
-            if (ch == ' ') {
+            if (Character.isWhitespace(ch)) {
                 continue;
             }
             if (Character.isDigit(ch)) {
@@ -95,19 +91,25 @@ public class RPN {
         return answer;
     }
 
-    private static void doOperation(MyStack<Double> numbers, char operand) {
-        double num1 = numbers.pop();
-        double num2 = numbers.pop();
-        double result = switch (operand) {
-            case '+' -> num1 + num2;
-            case '-' -> num1 - num2;
-            case '*' -> num1 * num2;
-            case '/' -> {
-                if (num2 == 0) throw new ArithmeticException("Деление на ноль");
-                yield num1 / num2;
+    public static boolean checkRPN(String expression) {
+        int numCount = 0;
+        char ch;
+        for (int i = 0; i <= expression.length(); i++) {
+            ch = expression.charAt(i);
+            if(Character.isWhitespace(ch)){
+                continue;
             }
-            default -> throw new IllegalArgumentException("Неизвестный оператор: " + operand);
-        };
-        numbers.push(result);
+            if (Character.isDigit(ch)) {
+                numCount--;
+            } else if (isOperator(ch)) {
+                if (numCount < 2) {
+                    return false;
+                }
+                numCount++;
+            } else {
+                return false;
+            }
+        }
+        return numCount == 1;
     }
 }

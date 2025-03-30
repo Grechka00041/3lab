@@ -1,16 +1,12 @@
-import java.util.Arrays;
-import java.util.Collections;
+package spn;
 
-public class SPN {
-    private static int getPriority(char ch){
-        return switch (ch) {
-            case '(' -> 1;
-            case ')' -> -1;
-            case '+', '-' -> 2;
-            case '*', '/' -> 3;
-            default -> 0;
-        };
-    }
+import utils.MyStack;
+
+import static utils.ExpressionsUtils.*;
+
+
+public abstract class SPN {
+
     public static String toSPN(String input){
         char ch;
         MyStack<Character> stack = new MyStack<>();
@@ -18,14 +14,14 @@ public class SPN {
 
         for(int i = input.length() - 1; i >= 0; i--) {
             ch = input.charAt(i);
-            if (ch == ' ') continue;
+            if (Character.isWhitespace(ch)) continue;
             else if (Character.isDigit(ch) || ch == '.'){
                 StringBuilder num = new StringBuilder();
                 while (i >= 0 && (Character.isDigit(input.charAt(i)) || input.charAt(i) == '.')) {
                     num.insert(0, ch);
-                    i++;
+                    i--;
                 }
-                i--;
+                i++;
                 output.append(num);
                 output.append(" ");
                 System.out.println("Стэк сейчас:" + stack);
@@ -33,16 +29,22 @@ public class SPN {
             }
             if (ch == ')') {
                 stack.push(ch);
+                System.out.println("Стэк сейчас:" + stack);
+                System.out.println("Текущая строка: " + output);
             }
             else if (ch == '(') {
                     while (!stack.isEmpty() && stack.peek() != ')') {
                         output.append(stack.pop()).append(" ");
+                        System.out.println("Стэк сейчас:" + stack);
+                        System.out.println("Текущая строка: " + output);
                     }
                     stack.pop();
             }
-            else{
+            else if (isOperator(ch)){
                 while (!stack.isEmpty() && getPriority(stack.peek()) > getPriority(ch)) {
                     output.append(stack.pop()).append(" ");
+                    System.out.println("Стэк сейчас:" + stack);
+                    System.out.println("Текущая строка: " + output);
                 }
                 stack.push(ch);
             }
@@ -50,14 +52,15 @@ public class SPN {
         }
         while (!stack.isEmpty()) {
             output.append(stack.pop()).append(" ");
+            System.out.println("Стэк сейчас:" + stack);
+            System.out.println("Текущая строка: " + output);
         }
 
-        /*String[] tokens = output.toString().trim().split(" ");
-        Collections.reverse(Arrays.asList(tokens));
-        return String.join(" ", tokens);
-
-         */
+        output.reverse();
+        System.out.println("Стэк сейчас:" + stack);
+        System.out.println("Текущая строка: " + output);
         return output.toString();
+
 
     }
 
@@ -67,7 +70,7 @@ public class SPN {
         char ch;
         for (int i = spn.length() - 1; i >= 0; i--) {
             ch = spn.charAt(i);
-            if (ch == ' ') {
+            if (Character.isWhitespace(ch)) {
                 continue;
             }
             if (Character.isDigit(ch)) {
@@ -83,20 +86,28 @@ public class SPN {
         return answer;
     }
 
-    private static void doOperation(MyStack<Double> numbers, char operand) {
-        double num1 = numbers.pop();
-        double num2 = numbers.pop();
-        double result = switch (operand) {
-            case '+' -> num1 + num2;
-            case '-' -> num1 - num2;
-            case '*' -> num1 * num2;
-            case '/' -> {
-                if (num2 == 0) throw new ArithmeticException("Деление на ноль");
-                yield num1 / num2;
+    public static boolean checkSPN(String expression) {
+        MyStack<Integer> stack = new MyStack<>();
+        char ch;
+        for (int i = expression.length() - 1; i >= 0; i--) {
+            ch = expression.charAt(i);
+            if(Character.isWhitespace(ch)){
+                continue;
             }
-            default -> throw new IllegalArgumentException("Неизвестный оператор: " + operand);
-        };
-        numbers.push(result);
+            if (Character.isDigit(ch)) {
+                stack.push(1);
+            } else if (isOperator(ch)) {
+                if (stack.size() < 2) {
+                    return false;
+                }
+                stack.pop();
+                stack.pop();
+                stack.push(1);
+            } else {
+                return false;
+            }
+        }
+        return stack.size() == 1;
     }
 
 }
