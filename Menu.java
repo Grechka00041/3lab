@@ -28,7 +28,7 @@ public abstract class Menu {
         int choice;
         String expression;
         boolean isCorrect;
-        double answer;
+        Integer answer;
         do {
             System.out.print("Выберите действие: ");
             choice = SafeScanner.scanInt(scanner);
@@ -36,7 +36,6 @@ public abstract class Menu {
             switch (choice) {
                 case 1:
                     System.out.print("Введите выражение: ");
-                    //expression = scanner.nextLine();
                     expression = evaluate(scanner.nextLine(), scanner);
                     while (!infix.validate(expression)){
                         System.out.print("Пожалуйста введите корректное выражение: ");
@@ -47,7 +46,7 @@ public abstract class Menu {
                     break;
                 case 2:
                     System.out.print("Введите выражение:");
-                    expression = scanner.nextLine();
+                    expression = evaluate(scanner.nextLine(), scanner);
                     while (!infix.validate(expression)){
                         System.out.print("Пожалуйста введите корректное выражение: ");
                         expression = scanner.nextLine();
@@ -57,7 +56,7 @@ public abstract class Menu {
                     break;
                 case 3:
                     System.out.print("Введите выражение: ");
-                    expression = scanner.nextLine();
+                    expression = evaluate(scanner.nextLine(), scanner);
                     isCorrect = infix.validate(expression);
                     if (isCorrect){
                         System.out.println("Ваше выражение корректно");
@@ -68,7 +67,7 @@ public abstract class Menu {
                     break;
                 case 4:
                     System.out.print("Введите выражение: ");
-                    expression = scanner.nextLine();
+                    expression = evaluate(scanner.nextLine(), scanner);
                     isCorrect = spn.validate(expression);
                     if (isCorrect){
                         System.out.println("Ваше выражение корректно");
@@ -79,7 +78,7 @@ public abstract class Menu {
                     break;
                 case 5:
                     System.out.print("Введите выражение: ");
-                    expression = scanner.nextLine();
+                    expression = evaluate(scanner.nextLine(), scanner);
                     isCorrect = rpn.validate(expression);
                     if (isCorrect){
                         System.out.println("Ваше выражение корректно");
@@ -90,7 +89,7 @@ public abstract class Menu {
                     break;
                 case 6:
                     System.out.print("Введите выражение: ");
-                    expression = scanner.nextLine();
+                    expression = evaluate(scanner.nextLine(), scanner);
                     while (!infix.validate(expression)){
                         System.out.print("Пожалуйста введите корректное выражение: ");
                         expression = scanner.nextLine();
@@ -100,7 +99,7 @@ public abstract class Menu {
                     break;
                 case 7:
                     System.out.print("Введите выражение: ");
-                    expression = scanner.nextLine();
+                    expression = evaluate(scanner.nextLine(), scanner);
                     while (!spn.validate(expression)){
                         System.out.print("Пожалуйста введите корректное выражение: ");
                         expression = scanner.nextLine();
@@ -110,7 +109,7 @@ public abstract class Menu {
                     break;
                 case 8:
                     System.out.print("Введите выражение: ");
-                    expression = scanner.nextLine();
+                    expression = evaluate(scanner.nextLine(), scanner);
                     while (!rpn.validate(expression)){
                         System.out.print("Пожалуйста введите корректное выражение: ");
                         expression = scanner.nextLine();

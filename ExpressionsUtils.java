@@ -12,10 +12,26 @@ public abstract class ExpressionsUtils {
         };
     }
 
-    public static void doOperation(MyStack<Double> numbers, char operand) {
-        double num1 = numbers.pop();
-        double num2 = numbers.pop();
-        double result = switch (operand) {
+    public static void doOperation(MyStack<Integer> numbers, char operand) {
+        int num1 = numbers.pop();
+        int num2 = numbers.pop();
+        int result = switch (operand) {
+            case '+' -> num1 + num2;
+            case '-' -> num2 - num1;
+            case '*' -> num1 * num2;
+            case '/' -> {
+                if (num1 == 0) throw new ArithmeticException("Деление на ноль");
+                yield num2 / num1;
+            }
+            default -> throw new IllegalArgumentException("Неизвестный оператор: " + operand);
+        };
+        numbers.push(result);
+    }
+
+    public static void doOperationSPN(MyStack<Integer> numbers, char operand) {
+        int num1 = numbers.pop();
+        int num2 = numbers.pop();
+        int result = switch (operand) {
             case '+' -> num1 + num2;
             case '-' -> num1 - num2;
             case '*' -> num1 * num2;

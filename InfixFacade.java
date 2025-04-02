@@ -2,7 +2,7 @@ package infix;
 
 public class InfixFacade {
 
-    public Double calculate(String expression){
+    public Integer calculate(String expression){
         return Infix.calculate(expression);
     }
 

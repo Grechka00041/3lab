@@ -32,4 +32,8 @@ public class MyStack<T>{
         return list.size();
     }
 
+    public MyStack<T> reverse(){
+        return (MyStack<T>) list.reversed();
+    }
+
 }

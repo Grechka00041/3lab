@@ -2,7 +2,7 @@ package spn;
 
 public class SPNFacade {
 
-    public Double calculate(String expression){
+    public int calculate(String expression){
         return SPN.calculate(expression);
     }
 

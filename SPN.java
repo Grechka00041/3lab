@@ -15,13 +15,15 @@ public abstract class SPN {
         for(int i = input.length() - 1; i >= 0; i--) {
             ch = input.charAt(i);
             if (Character.isWhitespace(ch)) continue;
-            else if (Character.isDigit(ch) || ch == '.'){
+            else if (Character.isDigit(ch)){
                 StringBuilder num = new StringBuilder();
-                while (i >= 0 && (Character.isDigit(input.charAt(i)) || input.charAt(i) == '.')) {
-                    num.insert(0, ch);
+                while (i >= 0 && (Character.isDigit(input.charAt(i)))) {
+                    //num.insert(0, ch);
+                    num.append(input.charAt(i));
                     i--;
                 }
                 i++;
+                //num.reverse();
                 output.append(num);
                 output.append(" ");
                 System.out.println("Стэк сейчас:" + stack);
@@ -64,9 +66,9 @@ public abstract class SPN {
 
     }
 
-    public static double calculate(String spn) {
-        double answer;
-        MyStack<Double> stack = new MyStack<>();
+    public static int calculate(String spn) {
+        int answer;
+        MyStack<Integer> stack = new MyStack<>();
         char ch;
         for (int i = spn.length() - 1; i >= 0; i--) {
             ch = spn.charAt(i);
@@ -74,15 +76,26 @@ public abstract class SPN {
                 continue;
             }
             if (Character.isDigit(ch)) {
-                stack.push((double)(ch-'0')); // WTF
+                StringBuilder num = new StringBuilder();
+                while (i >= 0 && (Character.isDigit(spn.charAt(i)))) {
+                    num.append(spn.charAt(i));
+                    i--;
+                }
+                i++;
+                num.reverse();
+                stack.push((Integer.valueOf(String.valueOf(num))));
                 System.out.println("Стэк сейчас:" + stack);
                 System.out.println("Текущая строка: " + spn);
             }
             else{
-                doOperation(stack, ch);
+                doOperationSPN(stack, ch);
+                System.out.println("Стэк сейчас:" + stack);
+                System.out.println("Текущая строка: " + spn);
             }
         }
         answer = stack.pop();
+        System.out.println("Стэк сейчас:" + stack);
+        System.out.println("Текущая строка: " + spn);
         return answer;
     }
 
@@ -95,6 +108,11 @@ public abstract class SPN {
                 continue;
             }
             if (Character.isDigit(ch)) {
+                StringBuilder num = new StringBuilder();
+                while (i < expression.length() && (Character.isDigit(expression.charAt(i)))) {
+                    num.append(expression.charAt(i--));
+                }
+                i++;
                 stack.push(1);
             } else if (isOperator(ch)) {
                 if (stack.size() < 2) {

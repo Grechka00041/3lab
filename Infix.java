@@ -6,8 +6,8 @@ import static utils.ExpressionsUtils.*;
 
 public abstract class Infix {
 
-    public static Double calculate(String input){
-        MyStack<Double> numbers = new MyStack<>();
+    public static Integer calculate(String input){
+        MyStack<Integer> numbers = new MyStack<>();
         MyStack<Character> operands = new MyStack<>();
         char ch;
         for(int i = 0; i < input.length(); i++) {
@@ -17,38 +17,45 @@ public abstract class Infix {
                 continue;
             }
 
-            if (Character.isDigit(ch) || ch == '.') {
+            if (Character.isDigit(ch)) {
                 StringBuilder num = new StringBuilder();
-                while (i < input.length() && (Character.isDigit(input.charAt(i)) || input.charAt(i) == '.')) {
+                while (i < input.length() && (Character.isDigit(input.charAt(i)) )) {
                     num.append(input.charAt(i++));
                 }
                 i--;
-                numbers.push(Double.parseDouble(num.toString()));
-                System.out.println("Стэк чисел:" + numbers);
-                System.out.println("Стэк операций: " + operands);
-            } else if (ch == '(') {
-                operands.push(ch);
-                System.out.println("Стэк чисел:" + numbers);
-                System.out.println("Стэк операций: " + operands);
-            } else if (ch == ')') {
-                while (operands.peek() != '(') {
-                    doOperation(numbers, operands.pop());
-                    System.out.println("Стэк чисел:" + numbers);
-                    System.out.println("Стэк операций: " + operands);
-                }
-                operands.pop();
-                System.out.println("Стэк чисел:" + numbers);
-                System.out.println("Стэк операций: " + operands);
-            } else {
-                while (!operands.isEmpty() && getPriority(operands.peek()) >= getPriority(ch)) {
-                    doOperation(numbers, operands.pop());
-                    System.out.println("Стэк чисел:" + numbers);
-                    System.out.println("Стэк операций: " + operands);
-                }
-                operands.push(ch);
+                numbers.push(Integer.parseInt(num.toString()));
                 System.out.println("Стэк чисел:" + numbers);
                 System.out.println("Стэк операций: " + operands);
             }
+            else{
+
+                if (ch == '(') {
+                    operands.push(ch);
+                    System.out.println("Стэк чисел:" + numbers);
+                    System.out.println("Стэк операций: " + operands);
+                }
+                if (ch == ')') {
+                    while (operands.peek() != '(' && !operands.isEmpty()) {
+                        doOperation(numbers, operands.pop());
+                        System.out.println("Стэк чисел:" + numbers);
+                        System.out.println("Стэк операций: " + operands);
+                    }
+                    operands.pop();
+                    System.out.println("Стэк чисел:" + numbers);
+                    System.out.println("Стэк операций: " + operands);
+                }
+                if(isOperator(ch)){
+                    while (!operands.isEmpty() && getPriority(operands.peek()) >= getPriority(ch)) {
+                        doOperation(numbers, operands.pop());
+                        System.out.println("Стэк чисел:" + numbers);
+                        System.out.println("Стэк операций: " + operands);
+                    }
+                    operands.push(ch);
+                    System.out.println("Стэк чисел:" + numbers);
+                    System.out.println("Стэк операций: " + operands);
+                }
+            }
+
         }
         while (!operands.isEmpty()) {
             doOperation(numbers, operands.pop());

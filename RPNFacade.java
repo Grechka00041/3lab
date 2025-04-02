@@ -1,7 +1,7 @@
 package rpn;
 
 public class RPNFacade {
-    public Double calculate(String expression){
+    public int calculate(String expression){
         return RPN.calculate(expression);
     }
 

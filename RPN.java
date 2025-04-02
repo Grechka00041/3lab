@@ -17,13 +17,14 @@ public abstract class RPN {
 
             if (ch == ' ') continue;
 
-            else if (Character.isDigit(ch) || ch == '.'){
+            else if (Character.isDigit(ch)){
                 StringBuilder num = new StringBuilder();
-                while (i < input.length() && (Character.isDigit(input.charAt(i)) || input.charAt(i) == '.')) {
+                while (i < input.length() && (Character.isDigit(input.charAt(i)))) {
                     num.append(input.charAt(i++));
                 }
                 i--;
                 output.append(num);
+                output.append(" ");
                 System.out.println("Стэк сейчас:" + stack);
                 System.out.println("Текущая строка: " + output);
             }
@@ -36,6 +37,7 @@ public abstract class RPN {
             else if(ch == ')'){
                 while (stack.peek() != '(') {
                     output.append(stack.pop());
+                    output.append(" ");
                     System.out.println("Стэк сейчас:" + stack);
                     System.out.println("Текущая строка: " + output);
                 }
@@ -46,7 +48,7 @@ public abstract class RPN {
             else{
                 output.append(" ");
                 while(!stack.isEmpty() && getPriority(stack.peek()) >= priority){
-
+                    output.append(stack.pop()).append(" ");
                     System.out.println("Стэк сейчас:" + stack);
                     System.out.println("Текущая строка: " + output);
                 }
@@ -60,23 +62,29 @@ public abstract class RPN {
             System.out.println("Стэк сейчас:" + stack);
             System.out.println("Текущая строка: " + output);
             output.append(stack.pop());
+            output.append(" ");
         }
         System.out.println("Стэк сейчас:" + stack);
         System.out.println("Конец стэка.");
         return output.toString();
     }
 
-    public static double calculate(String rpn) {
-        MyStack<Double> stack = new MyStack<>();
+    public static int calculate(String rpn) {
+        MyStack<Integer> stack = new MyStack<>();
         char ch;
-        double answer;
+        int answer;
         for (int i = 0; i < rpn.length(); i++) {
             ch = rpn.charAt(i);
             if (Character.isWhitespace(ch)) {
                 continue;
             }
             if (Character.isDigit(ch)) {
-                stack.push((double)(ch-'0')); // WTF
+                StringBuilder num = new StringBuilder();
+                while (i < rpn.length() && (Character.isDigit(rpn.charAt(i)))) {
+                    num.append(rpn.charAt(i++));
+                }
+                i--;
+                stack.push((Integer.valueOf(String.valueOf(num))));
                 System.out.println("Стэк сейчас:" + stack);
                 System.out.println("Текущая строка: " + rpn);
             } else {
@@ -92,24 +100,34 @@ public abstract class RPN {
     }
 
     public static boolean checkRPN(String expression) {
-        int numCount = 0;
+        MyStack<Integer> stack = new MyStack<>();
         char ch;
-        for (int i = 0; i <= expression.length(); i++) {
+        for (int i = 0; i < expression.length(); i++) {
             ch = expression.charAt(i);
             if(Character.isWhitespace(ch)){
                 continue;
             }
             if (Character.isDigit(ch)) {
-                numCount--;
+                StringBuilder num = new StringBuilder();
+                while (i < expression.length() && (Character.isDigit(expression.charAt(i)))) {
+                    num.append(expression.charAt(i++));
+                }
+                i--;
+                stack.push(1);
             } else if (isOperator(ch)) {
-                if (numCount < 2) {
+                if (stack.size() < 2) {
                     return false;
                 }
-                numCount++;
-            } else {
+                stack.pop();
+                stack.pop();
+                stack.push(1);
+            }
+
+            else {
                 return false;
             }
         }
-        return numCount == 1;
+        return stack.size() == 1 && isOperator(expression.charAt(expression.length()-1));
     }
+
 }

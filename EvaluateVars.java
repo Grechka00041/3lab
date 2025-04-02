@@ -2,8 +2,6 @@ package utils;
 
 import java.util.Scanner;
 
-import static utils.ExpressionsUtils.isOperator;
-import static utils.ExpressionsUtils.isVariable;
 
 public class EvaluateVars {
     public static String evaluate(String expression, Scanner scanner){
@@ -12,17 +10,19 @@ public class EvaluateVars {
         StringBuilder variable = new StringBuilder();
         for (int i = 0; i < expression.length(); i++){
             ch = expression.charAt(i);
-            if(Character.isWhitespace(ch) || Character.isDigit(ch)|| isOperator(ch)){
-                result.append(ch);
-            }
-            else{
+            if (Character.isLetter(ch)){
                 variable = new StringBuilder();
-                while (i < expression.length() && isVariable(ch)) {
-                    variable.append(expression.charAt(i++));
+                while( i < expression.length() && Character.isLetterOrDigit(expression.charAt(i))){
+                        variable.append(expression.charAt(i));
+                        i++;
                 }
                 i--;
-                System.out.print("Введите значение для переменной" + variable.toString() + ": ");
-                result.append(variable.toString());
+                System.out.print("Введите значение для переменной " + variable.toString() + ": ");
+                String value = scanner.nextLine();
+                result.append(value);
+            }
+            else {
+                    result.append(ch);
             }
         }
         return result.toString();
